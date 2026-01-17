@@ -1,24 +1,19 @@
 import { Workspace } from "@rbxts/services";
+import { applyInstance } from "shared/module";
 
 export default class Explosion {
-    private blastRadius = 5;
-    private blastPressure = 5;
-    private visible = true;
-    private parent = Workspace;
+    private part: Instance;
 
-    public position: Vector3;
-    
     constructor(position: Vector3) {
-        this.position = position;
+        this.part = applyInstance(new Instance("Explosion"), {
+            Position: position,
+            BlastRadius: 5,
+            BlastPressure: 5,
+            Visible: true,
+        });
     }
 
-    toRaw() {
-        return {
-            Position: this.position,
-            BlastRadius: this.blastRadius,
-            BlastPressure: this.blastPressure,
-            Visible: this.visible,
-            Parent: this.parent,
-        };
+    public spawn() {
+        this.part.Parent = Workspace;
     }
 }
