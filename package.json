@@ -25,5 +25,9 @@
     "prettier": "^3.7.4",
     "roblox-ts": "^3.0.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@rbxts/react": "^17.3.7-alpha.1",
+    "@rbxts/react-roblox": "^17.3.7-alpha.1"
   }
 }

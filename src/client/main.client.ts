@@ -1,4 +1,5 @@
 import { Players, UserInputService, Workspace } from "@rbxts/services";
+import "./ui/Root";
 import Ball from "shared/adapters/Ball";
 
 UserInputService.InputBegan.Connect((input, gameProcessed) => {
