@@ -1,8 +1,16 @@
-import React, { StrictMode } from "@rbxts/react";
-import { createPortal, createRoot } from "@rbxts/react-roblox";
+import React from "@rbxts/react";
 import { App } from "./App";
+import { Players } from "@rbxts/services";
+import ReactRoblox from "@rbxts/react-roblox";
 
-const playerGui = game.GetService("Players").LocalPlayer?.WaitForChild("PlayerGui");
-const root = createRoot(new Instance("Folder"));
+const playerGui = Players.LocalPlayer.WaitForChild("PlayerGui") as PlayerGui;
 
-root.render(<StrictMode>{createPortal(<App />, playerGui)}</StrictMode>);
+const screenGui = new Instance("ScreenGui");
+screenGui.Name = "ReactUI";
+screenGui.IgnoreGuiInset = true;
+screenGui.ResetOnSpawn = false;
+screenGui.Parent = playerGui;
+
+const root = ReactRoblox.createRoot(screenGui);
+
+root.render(<App />);
