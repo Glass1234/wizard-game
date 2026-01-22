@@ -1,97 +1,91 @@
-import React, { useRef, useState } from "@rbxts/react";
+import React, { useState } from "@rbxts/react";
 import { Item } from "./components/Item";
 
 interface ItemData {
-    id: number;
+	id: number;
 }
 
 type DropTarget = {
-    id: number;
-    side: "left" | "right";
+	id: number;
+	side: "left" | "right";
 };
 
-const INITIAL_ITEMS: ItemData[] = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-];
+const INITIAL_ITEMS: ItemData[] = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }];
 
 export function App() {
-    const [items, setItems] = useState<ItemData[]>(INITIAL_ITEMS);
-    const [draggingId, setDraggingId] = useState<number | undefined>(undefined);
-    
-    const [dropTarget, setDropTarget] = useState<DropTarget | undefined>(undefined);
+	const [items, setItems] = useState<ItemData[]>(INITIAL_ITEMS);
+	const [draggingId, setDraggingId] = useState<number | undefined>(undefined);
 
-    const finalizeMove = () => {
-        if (draggingId === undefined || dropTarget === undefined || draggingId === dropTarget.id) {
-            setDraggingId(undefined);
-            setDropTarget(undefined);
-            return;
-        }
+	const [dropTarget, setDropTarget] = useState<DropTarget | undefined>(undefined);
 
-        setItems((prevItems) => {
-            const oldIndex = prevItems.findIndex((i) => i.id === draggingId);
-            let targetIndex = prevItems.findIndex((i) => i.id === dropTarget.id);
+	const finalizeMove = () => {
+		if (draggingId === undefined || dropTarget === undefined || draggingId === dropTarget.id) {
+			setDraggingId(undefined);
+			setDropTarget(undefined);
+			return;
+		}
 
-            if (oldIndex === -1 || targetIndex === -1) return prevItems;
+		setItems((prevItems) => {
+			const oldIndex = prevItems.findIndex((i) => i.id === draggingId);
+			let targetIndex = prevItems.findIndex((i) => i.id === dropTarget.id);
 
-            if (dropTarget.side === "right") {
-                targetIndex += 1;
-            }
+			if (oldIndex === -1 || targetIndex === -1) return prevItems;
 
-            const newItems = [...prevItems];
-            
-            if (targetIndex > oldIndex) {
-                 targetIndex -= 1;
-            }
+			if (dropTarget.side === "right") {
+				targetIndex += 1;
+			}
 
-            const removed = newItems.remove(oldIndex); 
+			const newItems = [...prevItems];
 
-            if (removed !== undefined) {
-                newItems.insert(targetIndex, removed);
-            }
-            return newItems;
-        });
+			if (targetIndex > oldIndex) {
+				targetIndex -= 1;
+			}
 
-        setDraggingId(undefined);
-        setDropTarget(undefined);
-    };
+			const removed = newItems.remove(oldIndex);
 
-    return (
-        <frame
-            Size={UDim2.fromOffset(300, 200)}
-            AnchorPoint={new Vector2(1, 0)}
-            Position={UDim2.fromScale(1, 0)}
-            BackgroundColor3={Color3.fromRGB(30, 30, 30)}
-            BackgroundTransparency={0.15}
-            BorderSizePixel={0}
+			if (removed !== undefined) {
+				newItems.insert(targetIndex, removed);
+			}
+			return newItems;
+		});
+
+		setDraggingId(undefined);
+		setDropTarget(undefined);
+	};
+
+	return (
+		<frame
+			AnchorPoint={new Vector2(1, 0)}
+			BackgroundColor3={Color3.fromRGB(30, 30, 30)}
+			BackgroundTransparency={0.15}
+			BorderSizePixel={0}
 			ClipsDescendants={true}
-        >
-            <uilistlayout FillDirection={Enum.FillDirection.Horizontal} Padding={new UDim(0, 0)} SortOrder={Enum.SortOrder.LayoutOrder} />
-            
-            {items.map((item, index) => (
-                <Item
-                    key={item.id}
-                    id={item.id}
-                    layoutOrder={index}
-                    isDragging={draggingId === item.id}
-                    indicatorSide={
-                        (dropTarget?.id === item.id && draggingId !== item.id) 
-                        ? dropTarget.side 
-                        : undefined
-                    }
-                    onDragStart={() => setDraggingId(item.id)}
-                    onDragEnd={() => finalizeMove()}
-                    onHover={(side) => {
-                        if (draggingId !== undefined && draggingId !== item.id) {
-                            setDropTarget({ id: item.id, side: side });
-                        }
-                    }}
-                    onLeave={() => setDropTarget(undefined)}
-                />
-            ))}
-        </frame>
-    );
+			Position={UDim2.fromScale(1, 0)}
+			Size={UDim2.fromOffset(300, 200)}
+		>
+			<uilistlayout
+				FillDirection={Enum.FillDirection.Horizontal}
+				Padding={new UDim(0, 0)}
+				SortOrder={Enum.SortOrder.LayoutOrder}
+			/>
+
+			{items.map((item, index) => (
+				<Item
+					id={item.id}
+					indicatorSide={dropTarget?.id === item.id && draggingId !== item.id ? dropTarget.side : undefined}
+					isDragging={draggingId === item.id}
+					key={item.id}
+					layoutOrder={index}
+					onDragEnd={() => finalizeMove()}
+					onDragStart={() => setDraggingId(item.id)}
+					onHover={(side) => {
+						if (draggingId !== undefined && draggingId !== item.id) {
+							setDropTarget({ id: item.id, side: side });
+						}
+					}}
+					onLeave={() => setDropTarget(undefined)}
+				/>
+			))}
+		</frame>
+	);
 }
