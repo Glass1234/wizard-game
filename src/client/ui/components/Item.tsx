@@ -36,27 +36,39 @@ export function Item({
 		return relativeX > ITEM_SIZE / 2 ? "right" : "left";
 	};
 
+	const mouseEnter = () => {
+		setHovered(true);
+	};
+
+	const mouseLeave = () => {
+		setHovered(false);
+		onLeave();
+	};
+
+	const inputChanged = (rbx: GuiObject, input: InputObject) => {
+		if (input.UserInputType === Enum.UserInputType.MouseMovement) {
+			onHover(calculateSide(rbx, input));
+		}
+	};
+
+	const inputBegan = (rbx: GuiObject, input: InputObject) => {
+		if (input.UserInputType === Enum.UserInputType.MouseButton1) onDragStart();
+	};
+
+	const inputEnded = (rbx: GuiObject, input: InputObject) => {
+		if (input.UserInputType === Enum.UserInputType.MouseButton1) onDragEnd();
+	};
+
 	return (
 		<frame
 			Active={true}
 			BackgroundTransparency={1}
 			Event={{
-				MouseEnter: () => setHovered(true),
-				MouseLeave: () => {
-					setHovered(false);
-					onLeave();
-				},
-				InputChanged: (rbx, input) => {
-					if (input.UserInputType === Enum.UserInputType.MouseMovement) {
-						onHover(calculateSide(rbx, input));
-					}
-				},
-				InputBegan: (rbx, input) => {
-					if (input.UserInputType === Enum.UserInputType.MouseButton1) onDragStart();
-				},
-				InputEnded: (rbx, input) => {
-					if (input.UserInputType === Enum.UserInputType.MouseButton1) onDragEnd();
-				},
+				MouseEnter: mouseEnter,
+				MouseLeave: mouseLeave,
+				InputChanged: inputChanged,
+				InputBegan: inputBegan,
+				InputEnded: inputEnded,
 			}}
 			LayoutOrder={layoutOrder}
 			Size={UDim2.fromOffset(CONTAINER_WIDTH, ITEM_SIZE)}

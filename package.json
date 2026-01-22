@@ -7,7 +7,6 @@
     "build": "rbxtsc",
     "watch": "rbxtsc -w",
     "start": "rojo serve",
-    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -35,11 +34,5 @@
   "dependencies": {
     "@rbxts/react": "^17.3.7-alpha.1",
     "@rbxts/react-roblox": "^17.3.7-alpha.1"
-  },
-  "lint-staged": {
-    "src/**/*.{ts,tsx}": [
-      "npx eslint --fix",
-      "git add"
-    ]
   }
 }
